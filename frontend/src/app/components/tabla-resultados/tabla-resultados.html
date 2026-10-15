@@ -1,0 +1,75 @@
+<section class="panel">
+  <h2>3. Detalle por factura</h2>
+
+  <div class="barra">
+    <div class="chips">
+      @for (f of filtros; track f) {
+        <button
+          type="button"
+          class="chip"
+          [class.activo]="filtro() === f"
+          (click)="filtro.set(f)"
+        >
+          {{ f }} ({{ cantidad(f) }})
+        </button>
+      }
+    </div>
+    <input
+      type="search"
+      class="buscar"
+      placeholder="Buscar por id de factura…"
+      (input)="buscar($event)"
+    />
+  </div>
+
+  <div class="tabla-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Factura</th>
+          <th>NIT</th>
+          <th>Fecha</th>
+          <th>Concepto</th>
+          <th class="num">Base</th>
+          <th class="num">IVA</th>
+          <th class="num">Retención</th>
+          <th class="num">Total</th>
+          <th>Estado</th>
+          <th>Causas</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (d of filas(); track d.fila) {
+          <tr [class.fila-error]="d.estado !== 'Correcta'">
+            <td><strong>{{ d.id_factura || '—' }}</strong><br /><small>fila {{ d.fila }}</small></td>
+            <td>{{ d.nit_proveedor || '—' }}</td>
+            <td>{{ d.fecha_factura || '—' }}</td>
+            <td>{{ d.concepto || '—' }}</td>
+            <td class="num">{{ (d.base_gravable | number: '1.0-0') ?? '—' }}</td>
+            <td class="num">{{ (d.valor_iva | number: '1.0-0') ?? '—' }}</td>
+            <td class="num">{{ (d.valor_retencion | number: '1.0-0') ?? '—' }}</td>
+            <td class="num">{{ (d.total_factura | number: '1.0-0') ?? '—' }}</td>
+            <td>
+              <span class="insignia" [class.ok]="d.estado === 'Correcta'" [class.error]="d.estado !== 'Correcta'">
+                {{ d.estado }}
+              </span>
+            </td>
+            <td>
+              @for (c of d.causas; track c.codigo) {
+                <div class="causa">
+                  <b>{{ c.descripcion }}</b><br /><small>{{ c.detalle }}</small>
+                </div>
+              }
+              @for (a of d.advertencias; track a) {
+                <div class="causa aviso">⚠ {{ a }}</div>
+              }
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="10" class="vacio">No hay facturas con ese filtro.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <p class="nota">Mostrando {{ filas().length }} de {{ detalle().length }} facturas. Valores en pesos.</p>
+</section>

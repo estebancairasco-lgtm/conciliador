@@ -1,0 +1,41 @@
+<section class="panel">
+  <h2>2. Resumen</h2>
+  <div class="tarjetas">
+    <div class="tarjeta">
+      <span>Total de facturas</span>
+      <strong>{{ resumen().total_facturas }}</strong>
+    </div>
+    <div class="tarjeta ok">
+      <span>Correctas</span>
+      <strong>{{ resumen().correctas }}</strong>
+    </div>
+    <div class="tarjeta error">
+      <span>Con inconsistencia</span>
+      <strong>{{ resumen().con_inconsistencia }}</strong>
+      <small>{{ resumen().porcentaje_inconsistencias }}% del total</small>
+    </div>
+  </div>
+
+  @if (causas().length > 0) {
+    <h3>Causas encontradas</h3>
+    <ul class="causas">
+      @for (causa of causas(); track causa.codigo) {
+        <li>
+          <span class="cantidad">{{ causa.cantidad }}</span> {{ causa.descripcion }}
+        </li>
+      }
+    </ul>
+    <p class="nota">Una factura puede tener más de una causa, por eso la suma puede superar el total de inconsistencias.</p>
+  }
+
+  @if (resumen().con_advertencias > 0) {
+    <p class="nota">
+      ⚠ {{ resumen().con_advertencias }} factura(s) tienen líneas contables con débito y crédito en cero (advertencia, no cambia el estado).
+    </p>
+  }
+  @if (resumen().ids_contables_sin_factura.length > 0) {
+    <p class="nota">
+      Registros contables sin factura: {{ resumen().ids_contables_sin_factura.join(', ') }}
+    </p>
+  }
+</section>

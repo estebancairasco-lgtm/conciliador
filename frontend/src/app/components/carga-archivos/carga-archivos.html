@@ -1,0 +1,21 @@
+<section class="panel">
+  <h2>1. Cargar archivos</h2>
+  <div class="campos">
+    <label class="campo">
+      <span>facturas.csv</span>
+      <input type="file" accept=".csv" (change)="seleccionar($event, 'facturas')" />
+    </label>
+    <label class="campo">
+      <span>contabilidad.csv</span>
+      <input type="file" accept=".csv" (change)="seleccionar($event, 'contabilidad')" />
+    </label>
+  </div>
+  <button
+    type="button"
+    class="boton"
+    [disabled]="!facturas() || !contabilidad() || cargando()"
+    (click)="enviar()"
+  >
+    {{ cargando() ? 'Procesando…' : 'Procesar' }}
+  </button>
+</section>
